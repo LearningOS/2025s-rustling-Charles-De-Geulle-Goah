@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,15 +69,15 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
-        }
-	}
+	// pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	// {
+	// 	//TODO
+	// 	Self {
+    //         length: 0,
+    //         start: None,
+    //         end: None,
+    //     }
+	// }
 }
 
 impl<T> Display for LinkedList<T>
@@ -102,6 +102,33 @@ where
             None => write!(f, "{}", self.val),
         }
     }
+}
+
+impl<T: std::cmp::PartialOrd+Clone> LinkedList<T> {
+    pub fn merge(mut list_a:LinkedList<T>,mut list_b:LinkedList<T>) -> Self
+	{
+		//TODO
+		let la = list_a.length as i32; //list_a的长度
+		let lb = list_b.length as i32; //list_b的长度
+        let mut ca : i32 = 0;  //指向list_a的指针
+        let mut cb : i32 = 0;  //指向list_b的指针
+
+        let mut res = Self::new();  //合并后的链表
+
+        for _ in 0..la+lb {
+            //list_b的节点都遍历完了，或者在a和b没有遍历完的时候a的值小于b的值
+            if cb == lb || ca < la && cb < lb && *(list_a.get(ca).unwrap()) < *(list_b.get(cb).unwrap()) {
+                //先解引用再克隆
+                res.add((*list_a.get(ca).unwrap()).clone());  //把a的节点加入res
+                ca += 1;  //更新指针
+            } else {  //list_a的节点都遍历完了，或者在a和b没有遍历完的时候b的值小于a的值
+                res.add((*list_b.get(cb).unwrap()).clone()); //把b的节点加入res
+                cb += 1;  //更新指针
+            }
+        } 
+
+        res
+	}
 }
 
 #[cfg(test)]
